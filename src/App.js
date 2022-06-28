@@ -171,12 +171,14 @@ class App extends Component {
 
     async function unstakeall() {
       var rawNfts = await vaultcontract.methods.tokensOfOwner(account).call();
-      await vaultcontract.methods.unstake(rawNfts).send({ from: account });
+      const first25 = rawNfts.slice(0,25)
+      await vaultcontract.methods.unstake(first25).send({ from: account });
     }
 
     async function stakeAll() {
       var rawNfts = await contract.methods.walletOfOwner(account).call();
-      await vaultcontract.methods.stake(rawNfts).send({
+      const first25 = rawNfts.slice(0,25)
+      await vaultcontract.methods.stake(first25).send({
         from: account,
       });
     }
@@ -276,7 +278,7 @@ class App extends Component {
               <Button onClick={stakeAll} style={{ margin: "20px 10px" }} value="stake-all">
                 Stake ALL
               </Button>
-              <p>This will stake all your NFTs, the gas fee could be higher depending on how many you have.</p> <br />
+              <p>This will stake all your NFTs (Max. 25 per transaction, the same applies to unstake), the gas fee could be higher depending on how many you have.</p> <br />
             </form>
           </div>
           <div className="col vault">

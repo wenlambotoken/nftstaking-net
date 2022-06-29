@@ -100,7 +100,7 @@ export default function NFT() {
 
   if (loadingState === 'loaded' && !apicall.length)
     return (
-      <h1 className="text-3xl">Wallet Not Connected</h1>)
+      <h1 className="text-3xl">You don't have any NFTs</h1>)
   return (
     <div className='nftportal'>
       <div className="container col-lg-11 col-md-12 col-sm-12">

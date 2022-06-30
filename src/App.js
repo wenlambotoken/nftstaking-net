@@ -65,8 +65,9 @@ class App extends Component {
         var web3 = new Web3(window.ethereum);
         await window.ethereum.send("eth_requestAccounts");
         var accounts = await web3.eth.getAccounts();
-        account = `${accounts[0].slice(0,4)}***${accounts[0].slice(38,42)}`;
-        document.getElementById("connectbtn").value = account;
+        account = accounts[0];
+        let accountText = `${accounts[0].slice(0,4)}***${accounts[0].slice(38,42)}`
+        document.getElementById("connectbtn").value = accountText;
         contract = new web3.eth.Contract(ABI, NFTCONTRACT);
         vaultcontract = new web3.eth.Contract(VAULTABI, STAKINGCONTRACT);
 

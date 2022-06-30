@@ -1,15 +1,15 @@
-import "./App.css";
+import "./styles/App.css";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { Component, useEffect } from "react";
 import "sf-font";
-import ABI from "./ABI.json";
-import VAULTABI from "./VAULTABI.json";
-import TOKENABI from "./TOKENABI.json";
+import ABI from "./blockchain/ABIs/ABI.json";
+import VAULTABI from "./blockchain/ABIs/VAULTABI.json";
+import TOKENABI from "./blockchain/ABIs/TOKENABI.json";
 import {
   NFTCONTRACT,
   STAKINGCONTRACT,
-} from "./config";
+} from "./blockchain/config.js";
 import Web3 from "web3";
 
 
@@ -53,7 +53,7 @@ class App extends Component {
                     decimals: 18,
                     symbol: "BCH",
                   },
-                  rpcUrls: ["https://sonar.cash/"],
+                  rpcUrls: ["https://smartbch.fountainhead.cash/mainnet"],
                 },
               ],
             });
@@ -205,16 +205,16 @@ class App extends Component {
 
     return (
       <div className="App nftapp">
-        <nav class="navbar navbarfont navbarglow navbar-expand-md navbar-dark bg-dark mb-4">
-          <div class="container-fluid nav-container" style={{ fontFamily: "SF Pro Display" }}>
+        <nav className="navbar navbarfont navbarglow navbar-expand-md navbar-dark bg-dark mb-4">
+          <div className="container-fluid nav-container" style={{ fontFamily: "SF Pro Display" }}>
             <img className='nav-logo' style={{ width: '100px' }} src="lambo-logo.png" />
-            <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div className="collapse navbar-collapse" id="navbarCollapse">
               <ul
-                class="navbar-nav me-auto mb-2 px-3 mb-md-0"
+                className="navbar-nav me-auto mb-2 px-3 mb-md-0"
                 style={{ fontSize: "25px" }}
               >
-                <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#">
+                <li className="nav-item">
+                  <a className="nav-link active" aria-current="page" href="#">
                     Staking Page
                   </a>
                 </li>
@@ -251,7 +251,7 @@ class App extends Component {
                     textShadow: "1px 1px 1px black",
                   }}
                 >
-                  <label for="floatingInput">Please Connect Wallet</label>
+                  <label htmlFor="floatingInput">Please Connect Wallet</label>
                 </div>
               </div>
               <div>
@@ -306,7 +306,7 @@ class App extends Component {
               <div className="row px-3">
                 <div className="col">
                   <form
-                    class="stakingrewards"
+                    className="stakingrewards"
                     style={{
                       borderRadius: "25px",
                       boxShadow: "1px 1px 15px #ffffff",
@@ -428,7 +428,7 @@ class App extends Component {
                 </div>
               </div>
               <div className="row px-4 pt-2">
-                <div class="header">
+                <div className="header">
                   <div
                     style={{
                       fontSize: "25px",
@@ -450,11 +450,11 @@ class App extends Component {
                       <tr className="stakegoldeffect">
                         <td>WenLambo Legendary NFT Collection</td>
                         <td
-                          class="amount"
+                          className="amount"
                           data-test-id="rewards-summary-one-time"
                         >
-                          <span class="amount">25</span>&nbsp;
-                          <span class="currency">RLAM/NFT</span>
+                          <span className="amount">25</span>&nbsp;
+                          <span className="currency">RLAM/NFT</span>
                         </td>
                       </tr>
                     </tbody>

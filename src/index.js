@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './styles/index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import reportWebVitals from './reportWebVitals';
 import { Routes, Route } from "react-router-dom";
-import Nft from './nft';
+import Nft from './components/nft.js';
 
 <Routes>
 <Route path="/nft" element={<Nft />} />

@@ -1,13 +1,13 @@
-import './App.css';
+import '../styles/App.css';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useEffect, useState } from 'react'
 import 'sf-font';
-import VAULTABI from './VAULTABI.json';
-import { NFTCONTRACT, STAKINGCONTRACT, nftpng } from './config';
+import VAULTABI from '../blockchain/ABIs/VAULTABI.json';
+import { NFTCONTRACT, STAKINGCONTRACT, nftpng } from '../blockchain/config';
 import Web3 from 'web3';
-import ABI from './ABI.json';
+import ABI from '../blockchain/ABIs/ABI.json';
 
 var account = null;
 var vaultcontract = null;

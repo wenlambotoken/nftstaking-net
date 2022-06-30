@@ -271,11 +271,11 @@ class App extends Component {
                 <Button onClick={stakeInput} style={{ margin: "10px 5px", width: '25%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000"}} value="stake">
                   Stake
                 </Button>
-                <input id='stake-input' placeholder="Input your NFTs #ID" style={{ borderColor: 'black', color: 'white', width: '70%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #00000" }} />
+                <input id='stake-input' placeholder="Input your NFTs #ID" style={{ borderColor: 'black', color: 'white', width: '70%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #00000", padding: '3px' }} />
                 <Button onClick={unstakeInput} style={{ margin: "10px 5px", width: '25%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000" }} value="unstake">
                   Unstake
                 </Button>
-                <input id='unstake-input' placeholder="Input your NFTs #ID" style={{ borderColor: 'black', color: 'white', width: '70%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000" }} />
+                <input id='unstake-input' placeholder="Input your NFTs #ID" style={{ borderColor: 'black', color: 'white', width: '70%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000", padding: '3px' }} />
               </div>
               <br />
               <Button onClick={stakeAll} style={{ margin: "20px 10px", backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000" }} value="stake-all">

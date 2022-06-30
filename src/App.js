@@ -296,7 +296,7 @@ class App extends Component {
                 WenLambo NFT Staking Vault{" "}
               </h2>
               <div style={{width: '60%', margin: 'auto'}}>
-                <h6 style={{ fontWeight: "300", padding: '20px 0px' }}>If you don't authorize your wallet, transaction will fail or gas fee will appear as 0.99 BCH</h6>
+                <h6 style={{ fontWeight: "300", padding: '20px 0px' }}>If you don't authorize your wallet, transaction will fail or gas fee will be 0.99 BCH</h6>
               </div>
               <div className="row px-3">
                 <div className="col">

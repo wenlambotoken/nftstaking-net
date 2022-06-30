@@ -60,12 +60,13 @@ class App extends Component {
           }
         }
       }
+
       if (window.ethereum) {
         var web3 = new Web3(window.ethereum);
         await window.ethereum.send("eth_requestAccounts");
         var accounts = await web3.eth.getAccounts();
-        account = accounts[0];
-        document.getElementById("wallet-address").textContent = account;
+        account = `${accounts[0].slice(0,4)}***${accounts[0].slice(38,42)}`;
+        document.getElementById("connectbtn").value = account;
         contract = new web3.eth.Contract(ABI, NFTCONTRACT);
         vaultcontract = new web3.eth.Contract(VAULTABI, STAKINGCONTRACT);
 
@@ -241,19 +242,20 @@ class App extends Component {
                     Stake and Unstake
                   </h1>
                 </div>
-                <h6>Your Wallet Address</h6>
-                <div
-                  className="pb-3"
-                  id="wallet-address"
-                  style={{
-                    color: "#39FF14",
-                    fontWeight: "400",
-                    textShadow: "1px 1px 1px black",
-                  }}
-                >
-                  <label htmlFor="floatingInput">Please Connect Wallet</label>
-                </div>
               </div>
+
+              <h6 style={{ fontWeight: "300" }}>First time staking?</h6>
+              <Button
+                className="btn authorize"
+                onClick={enable}
+                style={{
+                  backgroundColor: "#ffffff10",
+                  boxShadow: "1px 1px 5px #000000",
+                  marginBottom: '20px'
+                }}
+              >
+                Authorize Your Wallet
+              </Button>
               <div>
                 <label style={{ fontWeight: "300", fontSize: "18px" }}>
                   Vault Options
@@ -265,17 +267,17 @@ class App extends Component {
               </p>
               <p>If you don't own the NFT, the transaction will fail.</p>
               <div className="stkunstk-btn-input">
-                <Button onClick={stakeInput} style={{ margin: "10px 5px", width: '25%' }} value="stake">
+                <Button onClick={stakeInput} style={{ margin: "10px 5px", width: '25%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000"}} value="stake">
                   Stake
                 </Button>
-                <input id='stake-input' placeholder="Input your NFTs #ID" style={{ width: '70%' }} />
-                <Button onClick={unstakeInput} style={{ margin: "10px 5px", width: '25%' }} value="unstake">
+                <input id='stake-input' placeholder="Input your NFTs #ID" style={{ borderColor: 'black', color: 'white', width: '70%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #00000" }} />
+                <Button onClick={unstakeInput} style={{ margin: "10px 5px", width: '25%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000" }} value="unstake">
                   Unstake
                 </Button>
-                <input id='unstake-input' placeholder="Input your NFTs #ID" style={{ width: '70%' }} />
+                <input id='unstake-input' placeholder="Input your NFTs #ID" style={{ borderColor: 'black', color: 'white', width: '70%', backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000" }} />
               </div>
               <br />
-              <Button onClick={stakeAll} style={{ margin: "20px 10px" }} value="stake-all">
+              <Button onClick={stakeAll} style={{ margin: "20px 10px", backgroundColor: "#ffffff10", boxShadow: "1px 1px 5px #000000" }} value="stake-all">
                 Stake ALL
               </Button>
               <p>This will stake all your NFTs (Max. 25 per transaction, the same applies to unstake), the gas fee could be higher depending on how many you have.</p> <br />
@@ -292,17 +294,9 @@ class App extends Component {
               >
                 WenLambo NFT Staking Vault{" "}
               </h2>
-              <h6 style={{ fontWeight: "300" }}>First time staking?</h6>
-              <Button
-                className="btn authorize"
-                onClick={enable}
-                style={{
-                  backgroundColor: "#ffffff10",
-                  boxShadow: "1px 1px 5px #000000",
-                }}
-              >
-                Authorize Your Wallet
-              </Button>
+              <div style={{width: '60%', margin: 'auto'}}>
+                <h6 style={{ fontWeight: "300", padding: '20px 0px' }}>If you don't authorize your wallet, transaction will fail or gas fee will appear as 0.99 BCH</h6>
+              </div>
               <div className="row px-3">
                 <div className="col">
                   <form

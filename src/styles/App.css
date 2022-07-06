@@ -88,6 +88,10 @@
   font-weight: 300;
 }
 
+.nav-item:hover{
+  cursor: pointer;
+}
+
 .nftminter {
     background: radial-gradient(circle at 50% 50%, #090f11, #0c1519, #101e2b, #0f223c, #0e2144);
     font-family: "SF Pro Display";
@@ -152,8 +156,13 @@
 }
 
 @media (max-width: 450px) {
+
   #wallet-address {
     font-size: 0.7rem;
+  }
+
+  #container {
+    width: 100%;
   }
 
   .container {
@@ -205,6 +214,15 @@
   }
 }
 
+@keyframes glow3 {
+  from {
+    box-shadow: 0 0 4px -1px #f4dc76;
+  }
+  to {
+    box-shadow: 0 0 10px 7px #ffb300;
+  }
+}
+
 .stakegoldeffect {
     font-family: "SF Pro Display";
     font-weight: 300;
@@ -214,6 +232,17 @@
       rgb(1, 53, 130),
       rgba(255, 0, 0, 0)
     )
+}
+
+.farmgoldeffect {
+  font-family: "SF Pro Display";
+  font-weight: 300;
+  animation: glow2 3s infinite alternate;
+  background: linear-gradient(
+    to bottom,
+    rgb(1, 53, 130),
+    rgba(255, 0, 0, 0)
+  )
 }
 
 .errorsearch {
@@ -289,4 +318,35 @@ background-image: linear-gradient( 112.1deg,  rgba(32,38,57,1) 11.4%, rgba(63,76
 
 ::placeholder {
   font-size: 15px;
+}
+/* FARM */
+
+.lp_input {
+  margin: 0;
+  padding: 0;
+}
+
+.lp_input input {
+  margin: 0;
+  padding: 0;
+  height: 20px;
+  vertical-align: top;
+}
+
+.lp_input .max_btn {
+  width: 50px;
+  height: 24px;
+  margin-left: -20px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+#farm-container {
+  width: 30%;
+}
+
+@media (max-width: 600px) {
+  #farm-container {
+    width: 100%;
+  }
 }

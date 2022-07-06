@@ -2,8 +2,20 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import "../styles/App.css";
 import { Button } from "react-bootstrap";
+import { farmcontract } from "../functions/ConnectButton";
+import { MASTERCHEFCONTRACT } from "../blockchain/config";
+import { lpcontract } from "../functions/ConnectButton";
+import { infinite } from "../blockchain/config";
+import { account } from "../functions/ConnectButton";
+
+// buscar una manera y crear una variable llamada 'balanceOf' que obtenga el balance de 'LPCONTRACT' 
+// Hacer que el boton max ponga en '#amount' la variable obtenida por balanceOf
 
 export default function Farm(props) {
+  async function enable() {
+    lpcontract.methods.approve(MASTERCHEFCONTRACT, infinite).send({ from: account });
+  }
+
   return (
     <div>
       <div className="nftapp" style={{ height: "100%", textAlign: "center"}}>
@@ -25,6 +37,7 @@ export default function Farm(props) {
                 <h6 style={{ fontWeight: "40" }}>AUTHORIZE YOUR WALLET</h6>
                 <Button
                   className="btn authorize"
+                  onClick={enable}
                   style={{
                     backgroundColor: "#ffffff10",
                     boxShadow: "1px 1px 5px #000000",
@@ -40,7 +53,7 @@ export default function Farm(props) {
                     boxShadow: "1px 1px 5px #000000",
                     marginBottom: "20px",
                   }}>Max</Button>
-                  <input style={{ width: '70%', padding: '15px', borderRadius: '10px'}} placeholder="Input the amount"/>
+                  <input id='amount' style={{ width: '70%', padding: '15px', borderRadius: '10px'}} placeholder="Input the amount"/>
               </div>
 
               <div className="stakebuttons" style={{  marginBottom: "20px", textAlign: 'left', position: 'relative' }} >

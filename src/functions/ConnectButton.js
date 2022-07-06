@@ -1,15 +1,19 @@
-import React from 'react'
+import React from 'react';
 import { useEffect } from 'react';
 import ABI from "../blockchain/ABIs/ABI.json";
-import { NFTCONTRACT, STAKINGCONTRACT } from "../blockchain/config.js";
+import { LPCONTRACT, NFTCONTRACT, STAKINGCONTRACT } from "../blockchain/config.js";
 import Web3 from "web3";
 import VAULTABI from "../blockchain/ABIs/VAULTABI.json";
-
+import { MASTERCHEFCONTRACT } from '../blockchain/config.js';
+import FARMABI from '../blockchain/ABIs/FARMABI.json';
+import LPABI from '../blockchain/ABIs/LPABI.json';
 
 export var account = null;
 export var contract = null;
 export var vaultcontract = null;
 export var web3 = null;
+export var farmcontract = null;
+export var lpcontract = null;
 
 
 export default function ConnectButton() {
@@ -19,7 +23,7 @@ export default function ConnectButton() {
     }, [])
 
     async function connectwallet() {
-        const chainId = 10000;
+        const chainId = 10001;
     
         if (window.ethereum.networkVersion !== chainId) {
           try {
@@ -61,6 +65,8 @@ export default function ConnectButton() {
           document.getElementById("connectbtn").value = accountText;
           contract = new web3.eth.Contract(ABI, NFTCONTRACT);
           vaultcontract = new web3.eth.Contract(VAULTABI, STAKINGCONTRACT);
+          farmcontract = new web3.eth.Contract(FARMABI, MASTERCHEFCONTRACT);
+          lpcontract = new web3.eth.Contract(LPABI, LPCONTRACT)
         
         if (window.location.pathname !== '/farm') {
           var getstakednfts = await vaultcontract.methods

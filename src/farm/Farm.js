@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import "../styles/App.css";
 import { Button } from "react-bootstrap";
@@ -8,15 +7,27 @@ import { lpcontract } from "../functions/ConnectButton";
 import { infinite } from "../blockchain/config";
 import { account } from "../functions/ConnectButton";
 import Web3 from "web3";
-
-/* Encontrar una manera de hacer que 'stakedBalance' se actualice cuando hay un deposit o un withdraw, o en render */
+import React, { useState } from "react";
+import { FarmConnectWallet } from "../functions/ConnectButton";
 
 export default function Farm() {
-  const [balance, setBalance] = useState(0);
 
-  window.onload = function () {
-    totalDeposit()
+  // Implementar logica para que si esta en '/farm' ejecute esto de aca abajo. saludos!!!!!!1
+  if(window.location.pathname === '/farm') {
+    window.onload = async () => {
+      await FarmConnectWallet()
+      totalDeposit()
+      pendingRewards()
+      window.setInterval(() => {
+        pendingRewards()
+      }, 1000);    
+    } 
   }
+
+  
+
+  const [balance, setBalance] = useState(0);
+  const [rewards, setRewards] = useState(0);
 
   async function enable() {
     await lpcontract.methods.approve(MASTERCHEFCONTRACT, infinite).send({ from: account });
@@ -24,33 +35,58 @@ export default function Farm() {
 
   async function balanceOf() {
     var balanceCall = await lpcontract.methods.balanceOf(account).call();
-    var result = Web3.utils.fromWei(balanceCall);
-    var balance = Number(result);
-    document.querySelector('#amount').value = balance;
+    var result = Web3.utils.fromWei(balanceCall, 'ether');
+    document.querySelector('#amount').value = result;
   }
 
   async function deposit() {
-    const amount = document.querySelector('#amount').value;
-    await farmcontract.methods.deposit(0, Web3.utils.toWei(amount, 'ether')).send({ from: account });
+    const value = document.querySelector('#amount').value;
+    const amount = Web3.utils.toWei(value, 'ether'); 
+    await farmcontract.methods.deposit(0, amount).send({ from: account });
+
+    const totalStaked = await farmcontract.methods.userInfo(0, account).call();
+    var deposit = Web3.utils.fromWei(totalStaked.amount);
+    var totalBalance = Number(deposit);
+    setBalance(totalBalance);
   }
 
   async function withdraw() {
+    const value = document.querySelector('#unstk-amount').value;
+    const amount = Web3.utils.toWei(value, 'ether'); 
+    await farmcontract.methods.withdraw(0, amount).send({ from: account });
 
+    const totalStaked = await farmcontract.methods.userInfo(0, account).call();
+    var deposit = Web3.utils.fromWei(totalStaked.amount);
+    var totalBalance = Number(deposit).toFixed(4);
+    setBalance(totalBalance);
   }
 
   async function totalDeposit() {
-    var totalStaked = await farmcontract.methods.userInfo(0, account).call();
+    const totalStaked = await farmcontract.methods.userInfo(0, account).call();
     var deposit = Web3.utils.fromWei(totalStaked.amount);
     var totalBalance = Number(deposit);
-    console.log(totalStaked)
     setBalance(totalBalance);
   }
-  
+
+  async function totalStaked() {
+    const totalStaked = await farmcontract.methods.userInfo(0, account).call();
+    var deposit = Web3.utils.fromWei(totalStaked.amount);
+    document.querySelector('#unstk-amount').value = deposit;
+  }
+
+  async function pendingRewards() {
+    const pendingRewards = await farmcontract.methods.pendingSushi(0, account).call();
+    const rawRewards = Web3.utils.fromWei(pendingRewards)
+    setRewards(rawRewards)
+  }
 
   return (
     <div>
       <div className="nftapp" style={{ height: "100%", textAlign: "center"}}>
-        <Navbar />
+        {/* Crear un prop que sirva para *connectwallet* */}
+        <Navbar 
+        connectwallet={FarmConnectWallet}
+        />
         <div className="container" id="farm-container">
           <div className="col">
             <form style={{ margin: "auto", paddingBottom: '5px' }} className="nftminter">
@@ -78,20 +114,17 @@ export default function Farm() {
                   Approve
                 </Button>
               </div>
-              <div className="lp_input pb-5">
-                <Button 
-                className='me-3' 
-                onClick={balanceOf}
-                style={{
-                    backgroundColor: "#ffffff10",
-                    boxShadow: "1px 1px 5px #000000",
-                    marginBottom: "20px",
-                  }}>
-                    Max
-                    </Button>
+              <div className="lp_input pb-2 pt-4">
+                  <Button 
+                  style={{ marginRight: '10px', marginBottom: '30px', width: '20%', height: '40px', backgroundColor: "#ffffff10",boxShadow: "1px 1px 5px #000000" }}
+                  onClick={deposit}
+                  >
+                  Stake
+                  </Button>
                   <input id='amount' 
                   style={{ 
-                    width: '70%', 
+                    width: '50%',
+                    height: '40px',
                     padding: '15px', 
                     borderRadius: '10px',
                     borderColor: "black",
@@ -101,17 +134,46 @@ export default function Farm() {
                   }}
                   placeholder="Input the amount"
                   />
+                <Button 
+                className='btn-sm'
+                onClick={balanceOf}
+                style={{
+                    marginBottom: '35px',
+                    marginLeft: '10px',
+                    backgroundColor: "#ffffff10",
+                    boxShadow: "1px 1px 5px #000000",
+                  }}>
+                    Max
+                    </Button>
               </div>
-
-              <div className="stakebuttons" style={{  marginBottom: "20px", textAlign: 'left', position: 'relative' }} >
+              <div className="lp_input pb-5">
                   <Button 
-                  className='ms-4' 
-                  style={{ width: '35%', position: 'absolute', left: '0', bottom: '0', backgroundColor: "#ffffff10",boxShadow: "1px 1px 5px #000000" }}
-                  onClick={deposit}
-                  >
-                  Stake
-                  </Button>
-                  <Button className='me-4' style={{ width: '35%', position: 'absolute', right: '0', bottom: '0', backgroundColor: "#ffffff10",boxShadow: "1px 1px 5px #000000" }}>Unstake</Button>
+                  onClick={withdraw}
+                  style={{ marginRight: '10px', marginBottom: '30px', width: '20%', height: '40px', backgroundColor: "#ffffff10",boxShadow: "1px 1px 5px #000000" }}>
+                    Unstake
+                    </Button>
+                  <input id='unstk-amount' 
+                  style={{ 
+                    width: '50%', 
+                    padding: '15px',
+                    height: '40px', 
+                    borderRadius: '10px',
+                    borderColor: "black",
+                    color: "white",
+                    backgroundColor: "#ffffff10",
+                    boxShadow: "1px 1px 5px #00000",
+                  }}
+                  placeholder="Input the amount"
+                  />
+                   <Button className='btn-sm' onClick={totalStaked}
+                    style={{
+                    marginBottom: '35px',
+                    marginLeft: '10px',
+                    backgroundColor: "#ffffff10",
+                    boxShadow: "1px 1px 5px #000000",
+                   }}>
+                    Max
+                    </Button>
               </div>
             <div className="rewards farmgoldeffect" style={{borderStyle: 'solid', borderColor: 'darkblue', width: '90%', margin: 'auto', borderRadius: '20px', marginBottom: '50px', borderWidth: '1px'}}>
                 <h4 className="pt-3" style={{ fontWeight: "300" }}>
@@ -129,7 +191,7 @@ export default function Farm() {
                     color: 'yellow'
                   }}
                 >
-                  <span style={{color: 'white'}}>13.33</span> RLAM
+                  <span id='rewards' style={{color: 'white'}}>{rewards}</span> RLAM
                 </h5>
                 <Button style={{
                   backgroundColor: "#ffffff10",

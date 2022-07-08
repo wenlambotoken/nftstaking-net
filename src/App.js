@@ -9,7 +9,7 @@ import Navbar from "./components/Navbar";
 import Nftminter from "./components/Nftminter";
 import Nftportal from "./components/Nftportal";
 import Nft from "./components/nft.js";
-import { account, vaultcontract, contract } from './functions/ConnectButton';
+import { account, vaultcontract, contract, StakeConnectWallet } from './functions/ConnectButton';
 
 
 class App extends Component {
@@ -64,7 +64,10 @@ class App extends Component {
 
     return (
       <div className="App nftapp">
-          <Navbar />
+        {/* modificar prop aca */}
+          <Navbar
+          connectwallet={StakeConnectWallet}
+          />
           <Nftminter
             stakeInput={stakeInput}
             unstakeInput={unstakeInput}

@@ -51,7 +51,9 @@ export default function Navbar(props) {
               </ul>
             </div>
           </div>
-          <ConnectButton />
+          <ConnectButton 
+          connectwallet={props.connectwallet}
+          />
         </nav>
     </div>
   );

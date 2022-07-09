@@ -12,7 +12,6 @@ import { FarmConnectWallet } from "../functions/ConnectButton";
 
 export default function Farm() {
 
-  // Implementar logica para que si esta en '/farm' ejecute esto de aca abajo. saludos!!!!!!1
   if(window.location.pathname === '/farm') {
     window.onload = async () => {
       await FarmConnectWallet()
@@ -20,14 +19,18 @@ export default function Farm() {
       pendingRewards()
       window.setInterval(() => {
         pendingRewards()
+        totalDeposit()
       }, 1000);    
     } 
   }
 
-  
+  // Hay una cantidad fija de tokens que se emiten por bloque, esa cantidad se distribuye (/) entre el % de pool de los usuarios
+  // 
 
   const [balance, setBalance] = useState(0);
   const [rewards, setRewards] = useState(0);
+  const blocksPerDay = 12 * 60 * 24 // 12 blocks per minute
+  const daysPerYear = 365;
 
   async function enable() {
     await lpcontract.methods.approve(MASTERCHEFCONTRACT, infinite).send({ from: account });
@@ -77,7 +80,13 @@ export default function Farm() {
   async function pendingRewards() {
     const pendingRewards = await farmcontract.methods.pendingSushi(0, account).call();
     const rawRewards = Web3.utils.fromWei(pendingRewards)
-    setRewards(rawRewards)
+    const rewards = Number(rawRewards).toFixed(4)
+    setRewards(rewards)
+  }
+
+  async function harvest() {
+    await farmcontract.methods.withdraw(0, 0).send({ from: account })
+    setRewards(0)
   }
 
   return (
@@ -193,7 +202,9 @@ export default function Farm() {
                 >
                   <span id='rewards' style={{color: 'white'}}>{rewards}</span> RLAM
                 </h5>
-                <Button style={{
+                <Button 
+                onClick={harvest}
+                style={{
                   backgroundColor: "#ffffff10",
                   boxShadow: "1px 1px 5px #000000",
                   marginBottom: "20px",

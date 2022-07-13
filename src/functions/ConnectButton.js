@@ -1,11 +1,13 @@
 import React from 'react';
 import ABI from "../blockchain/ABIs/ABI.json";
-import { LPCONTRACT, NFTCONTRACT, STAKINGCONTRACT } from "../blockchain/config.js";
+import { BCHCONTRACT, LPCONTRACT, NFTCONTRACT, STAKINGCONTRACT } from "../blockchain/config.js";
 import Web3 from "web3";
 import VAULTABI from "../blockchain/ABIs/VAULTABI.json";
 import { MASTERCHEFCONTRACT } from '../blockchain/config.js';
 import FARMABI from '../blockchain/ABIs/FARMABI.json';
 import LPABI from '../blockchain/ABIs/LPABI.json';
+import PAIRABI from '../blockchain/ABIs/PAIRABI.json'
+import ERC20ABI from '../blockchain/ABIs/ERC20ABI.json'
 
 export var account = null;
 export var contract = null;
@@ -13,7 +15,9 @@ export var vaultcontract = null;
 export var web3 = null;
 export var farmcontract = null;
 export var lpcontract = null;
-
+export var paircontract = null;
+export var bchpaircontract = null;
+export var chefBalanceContract = null;
 
 export default function ConnectButton(props) {
     
@@ -135,7 +139,10 @@ export async function FarmConnectWallet() {
     vaultcontract = new web3.eth.Contract(VAULTABI, STAKINGCONTRACT);
     farmcontract = new web3.eth.Contract(FARMABI, MASTERCHEFCONTRACT);
     lpcontract = new web3.eth.Contract(LPABI, LPCONTRACT)
-
+    paircontract = new web3.eth.Contract(PAIRABI, LPCONTRACT);
+    bchpaircontract = new web3.eth.Contract(PAIRABI, BCHCONTRACT);
+    chefBalanceContract = new web3.eth.Contract(ERC20ABI, LPCONTRACT)
+  
   } else {
     alert("Please install metamask");
 }}

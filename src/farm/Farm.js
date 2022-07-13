@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbar.js";
 import "../styles/App.css";
 import { Button } from "react-bootstrap";
 import { farmcontract } from "../functions/ConnectButton";
@@ -9,28 +9,32 @@ import { account } from "../functions/ConnectButton";
 import Web3 from "web3";
 import React, { useState } from "react";
 import { FarmConnectWallet } from "../functions/ConnectButton";
+import getRLamboPrice  from './apr';
 
 export default function Farm() {
 
   if(window.location.pathname === '/farm') {
     window.onload = async () => {
       await FarmConnectWallet()
-      totalDeposit()
-      pendingRewards()
-      window.setInterval(() => {
-        pendingRewards()
-        totalDeposit()
-      }, 1000);    
+      // totalDeposit()
+      // pendingRewards()
+      getRLamboPrice()
+      // window.setInterval(() => {
+      //   pendingRewards()
+      //   totalDeposit()
+      // }, 1000);    
     } 
   }
 
-  // Hay una cantidad fija de tokens que se emiten por bloque, esa cantidad se distribuye (/) entre el % de pool de los usuarios
-  // 
-
   const [balance, setBalance] = useState(0);
   const [rewards, setRewards] = useState(0);
-  const blocksPerDay = 12 * 60 * 24 // 12 blocks per minute
-  const daysPerYear = 365;
+
+  /*
+  Para obtener el apr se necesita:
+  3- Precio del LP
+  5- Bloques por dia y por anio
+  6- Cuantas tokens se emiten por bloque al dia/anio
+  */
 
   async function enable() {
     await lpcontract.methods.approve(MASTERCHEFCONTRACT, infinite).send({ from: account });

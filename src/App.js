@@ -64,7 +64,6 @@ class App extends Component {
 
     return (
       <div className="App nftapp">
-        {/* modificar prop aca */}
           <Navbar
           connectwallet={StakeConnectWallet}
           />

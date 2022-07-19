@@ -1,40 +1,30 @@
 import Navbar from "../components/Navbar.js";
 import "../styles/App.css";
 import { Button } from "react-bootstrap";
-import { farmcontract } from "../functions/ConnectButton";
-import { MASTERCHEFCONTRACT } from "../blockchain/config";
-import { lpcontract } from "../functions/ConnectButton";
-import { infinite } from "../blockchain/config";
-import { account } from "../functions/ConnectButton";
+import { MASTERCHEFCONTRACT, infinite } from "../blockchain/config";
+import { lpcontract, account, FarmConnectWallet, farmcontract } from "../functions/ConnectButton";
 import Web3 from "web3";
 import React, { useState } from "react";
-import { FarmConnectWallet } from "../functions/ConnectButton";
 import getRLamboPrice  from './apr';
+import { apr } from "./apr";
+import { tvl } from "./apr";
 
 export default function Farm() {
 
-  if(window.location.pathname === '/farm') {
-    window.onload = async () => {
-      await FarmConnectWallet()
-      // totalDeposit()
-      // pendingRewards()
-      getRLamboPrice()
-      // window.setInterval(() => {
-      //   pendingRewards()
-      //   totalDeposit()
-      // }, 1000);    
-    } 
-  }
-
+  const [stateTvl, setTvl] = useState(0);
+  const [stateApr, setApr] = useState(0);
   const [balance, setBalance] = useState(0);
   const [rewards, setRewards] = useState(0);
 
-  /*
-  Para obtener el apr se necesita:
-  3- Precio del LP
-  5- Bloques por dia y por anio
-  6- Cuantas tokens se emiten por bloque al dia/anio
-  */
+  async function getApr() {
+    await getRLamboPrice();
+    setApr(apr);
+  }
+
+  async function getTvl() {
+    await getRLamboPrice();
+    setTvl(tvl)
+  }
 
   async function enable() {
     await lpcontract.methods.approve(MASTERCHEFCONTRACT, infinite).send({ from: account });
@@ -54,6 +44,8 @@ export default function Farm() {
     const totalStaked = await farmcontract.methods.userInfo(0, account).call();
     var deposit = Web3.utils.fromWei(totalStaked.amount);
     var totalBalance = Number(deposit);
+    getApr();
+    getTvl();
     setBalance(totalBalance);
   }
 
@@ -65,6 +57,8 @@ export default function Farm() {
     const totalStaked = await farmcontract.methods.userInfo(0, account).call();
     var deposit = Web3.utils.fromWei(totalStaked.amount);
     var totalBalance = Number(deposit).toFixed(4);
+    getTvl();
+    getApr();
     setBalance(totalBalance);
   }
 
@@ -83,15 +77,32 @@ export default function Farm() {
 
   async function pendingRewards() {
     const pendingRewards = await farmcontract.methods.pendingSushi(0, account).call();
-    const rawRewards = Web3.utils.fromWei(pendingRewards)
-    const rewards = Number(rawRewards).toFixed(4)
-    setRewards(rewards)
+    const rawRewards = Web3.utils.fromWei(pendingRewards);
+    const rewards = Number(rawRewards).toFixed(2);
+    setRewards(rewards);
   }
 
   async function harvest() {
     await farmcontract.methods.withdraw(0, 0).send({ from: account })
     setRewards(0)
   }
+
+
+  if(window.location.pathname === '/farm') {
+    (async () => {
+      await FarmConnectWallet()
+      totalDeposit()
+      pendingRewards()
+      await getRLamboPrice()
+      getApr()
+      getTvl()
+      window.setInterval(() => {
+        pendingRewards()
+        totalDeposit()
+      }, 10000);    
+    })()
+  }
+  console.log(tvl);
 
   return (
     <div>
@@ -127,6 +138,9 @@ export default function Farm() {
                   Approve
                 </Button>
               </div>
+              <div className='tvl py-2'>
+                <h5 style={{ fontWeight: '300' }}>TVL: ${stateTvl}</h5>
+              </div>
               <div className="lp_input pb-2 pt-4">
                   <Button 
                   style={{ marginRight: '10px', marginBottom: '30px', width: '20%', height: '40px', backgroundColor: "#ffffff10",boxShadow: "1px 1px 5px #000000" }}
@@ -159,7 +173,7 @@ export default function Farm() {
                     Max
                     </Button>
               </div>
-              <div className="lp_input pb-5">
+              <div className="lp_input pb-3">
                   <Button 
                   onClick={withdraw}
                   style={{ marginRight: '10px', marginBottom: '30px', width: '20%', height: '40px', backgroundColor: "#ffffff10",boxShadow: "1px 1px 5px #000000" }}>
@@ -192,7 +206,7 @@ export default function Farm() {
                 <h4 className="pt-3" style={{ fontWeight: "300" }}>
                   APR
                 </h4>
-                <h5>142.3%</h5>
+                <h5>{Number(stateApr).toFixed(2)}%</h5>
                 <h4 className="pt-3" style={{ fontWeight: "300" }}>
                   Your Rewards
                 </h4>

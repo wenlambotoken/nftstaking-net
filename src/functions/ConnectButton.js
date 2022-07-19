@@ -1,23 +1,20 @@
 import React from 'react';
 import ABI from "../blockchain/ABIs/ABI.json";
-import { BCHCONTRACT, LPCONTRACT, NFTCONTRACT, STAKINGCONTRACT } from "../blockchain/config.js";
+import { LPCONTRACT, NFTCONTRACT, STAKINGCONTRACT } from "../blockchain/config.js";
 import Web3 from "web3";
 import VAULTABI from "../blockchain/ABIs/VAULTABI.json";
 import { MASTERCHEFCONTRACT } from '../blockchain/config.js';
 import FARMABI from '../blockchain/ABIs/FARMABI.json';
 import LPABI from '../blockchain/ABIs/LPABI.json';
-import PAIRABI from '../blockchain/ABIs/PAIRABI.json'
-import ERC20ABI from '../blockchain/ABIs/ERC20ABI.json'
+import getRLamboPrice from '../farm/apr';
 
 export var account = null;
 export var contract = null;
 export var vaultcontract = null;
-export var web3 = null;
 export var farmcontract = null;
 export var lpcontract = null;
-export var paircontract = null;
-export var bchpaircontract = null;
-export var chefBalanceContract = null;
+export var rewardPairContract = null;
+export var web3 = null;
 
 export default function ConnectButton(props) {
     
@@ -126,7 +123,7 @@ export async function FarmConnectWallet() {
   }
 
   if (window.ethereum) {
-    var web3 = new Web3(window.ethereum);
+    var web3 = await new Web3(window.ethereum);
     await window.ethereum.send("eth_requestAccounts");
     var accounts = await web3.eth.getAccounts();
     account = accounts[0];
@@ -138,13 +135,11 @@ export async function FarmConnectWallet() {
     contract = new web3.eth.Contract(ABI, NFTCONTRACT);
     vaultcontract = new web3.eth.Contract(VAULTABI, STAKINGCONTRACT);
     farmcontract = new web3.eth.Contract(FARMABI, MASTERCHEFCONTRACT);
-    lpcontract = new web3.eth.Contract(LPABI, LPCONTRACT)
-    paircontract = new web3.eth.Contract(PAIRABI, LPCONTRACT);
-    bchpaircontract = new web3.eth.Contract(PAIRABI, BCHCONTRACT);
-    chefBalanceContract = new web3.eth.Contract(ERC20ABI, LPCONTRACT)
-  
+    lpcontract = new web3.eth.Contract(LPABI, LPCONTRACT);
+
   } else {
     alert("Please install metamask");
+    getRLamboPrice()
 }}
 
 

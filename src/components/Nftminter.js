@@ -199,6 +199,7 @@ export default function Nftminter(props) {
               </form>
             </div>
             <img
+              alt="lambo img"
               style={{ margin: "auto" }}
               className="col-lg-4 blue-lambo"
               src="wenlambo-image.png"

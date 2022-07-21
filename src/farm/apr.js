@@ -3,26 +3,26 @@ import { account } from '../functions/ConnectButton';
 import PAIRABI from '../blockchain/ABIs/PAIRABI.json';
 import FARMABI from '../blockchain/ABIs/FARMABI.json';
 import { Token, WBCH, ChainId } from '@mistswapdex/sdk';
-import { MASTERCHEFCONTRACT, RLAMBOTESTADDRESS } from '../blockchain/config';
+import { MASTERCHEFCONTRACT, RLAMBOADDRESS, LAMBOADDRESS } from '../blockchain/config';
 import axios from 'axios'
 
 export var apr;
 export var tvl; 
 
 export default async function getRLamboPrice() {
-  // const chainId = ChainId.SMARTBCH;
 
   var web3 = new Web3(window.ethereum);
   const MasterchefContract = new web3.eth.Contract(FARMABI, MASTERCHEFCONTRACT)
 
-  const RLAM = new Token(ChainId.SMARTBCH_AMBER, RLAMBOTESTADDRESS, 18, 'RLAM', 'Reward Lambo');
+  const RLAM = new Token(ChainId.SMARTBCH, RLAMBOADDRESS, 18, 'RLAM', 'Reward Lambo');
+  const LAMBO = new Token(ChainId.SMARTBCH, LAMBOADDRESS, 18, 'LAMBO', 'Lambo Token');
 
   const hardcodedPairs = {
-    "0x7a6d95Ba762E3F05cdCCdE56099d17B8524B37F4": {
+    "0xC86eD705e10D939057c65C61c099af2AB7f8FdF3": {
       farmId: 0,
       allocPoint: 10000,
       token0: RLAM,
-      token1: WBCH[ChainId.SMARTBCH_AMBER],
+      token1: LAMBO,
     },
   }
   var farms = []
@@ -66,6 +66,7 @@ export default async function getRLamboPrice() {
   let bchPriceUSD = 100;
   let rLamPriceUSD = 0.001;
 
+  console.log('la concha de tu madre');
   // if (chainId === ChainId.SMARTBCH) {
   //   let bchPriceFlexUSD = 100;
   //   const mistflexusdPool = farms.find((v) => v.pair === '0x437E444365aD9ed788e8f255c908bceAd5AEA645').pool;
@@ -88,6 +89,8 @@ export default async function getRLamboPrice() {
   //     rLamPriceUSD = 0.0001;
   // }
   
+  //1. hacer la logica para encontrar el precio de rlam en lambos
+  //2. pasar el precio de rlam en lambos a wbch y de wbch a bcusdt
 
   const v2PairsBalances = await Promise.all(farms.map(async (farm) => {
     const lpToken = new Token(ChainId.SMARTBCH, farm.pair, 18, 'LP', 'LP Token');
@@ -105,16 +108,15 @@ export default async function getRLamboPrice() {
       const totalSupply = farms[i].pool.totalSupply;
       const chefBalance = v2PairsBalances[i][0];
 
-      let tvl = 0;
       if (farms[i].pool.token0 === RLAM.address) {
         const reserve = Number.parseFloat(farms[i].pool.reserves[0]).toFixed();
         tvl = reserve / totalSupply * chefBalance * rLamPriceUSD * 2;
       }
-      else if (farms[i].pool.token0 === WBCH[ChainId.SMARTBCH_AMBER].address) {
+      else if (farms[i].pool.token0 === WBCH[ChainId.SMARTBCH].address) {
         const reserve = Number.parseFloat(farms[i].pool.reserves[0]).toFixed();
         tvl = reserve / totalSupply * chefBalance * bchPriceUSD * 2;
       }
-      else if (farms[i].pool.token1 === WBCH[ChainId.SMARTBCH_AMBER].address) {
+      else if (farms[i].pool.token1 === WBCH[ChainId.SMARTBCH].address) {
         const reserve = Number.parseFloat(farms[i].pool.reserves[1]).toFixed();
         tvl = reserve / totalSupply * chefBalance * bchPriceUSD * 2;
       }
@@ -127,7 +129,7 @@ export default async function getRLamboPrice() {
       farms[i].chefBalance = 0;
     }
   }
-  tvl = farms[0].tvl;
+  tvl = Number(farms[0].tvl).toFixed(2);
 
   const totalAllocPoint = await MasterchefContract.methods.totalAllocPoint().call();
   const sushiPerBlock = await MasterchefContract.methods.sushiPerBlock().call();

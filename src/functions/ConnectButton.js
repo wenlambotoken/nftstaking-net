@@ -6,7 +6,6 @@ import VAULTABI from "../blockchain/ABIs/VAULTABI.json";
 import { MASTERCHEFCONTRACT } from '../blockchain/config.js';
 import FARMABI from '../blockchain/ABIs/FARMABI.json';
 import LPABI from '../blockchain/ABIs/LPABI.json';
-import getRLamboPrice from '../farm/apr';
 
 export var account = null;
 export var contract = null;
@@ -92,7 +91,7 @@ export async function rewardinfo() {
 }
 
 export async function FarmConnectWallet() {
-  const chainId = 10001;
+  const chainId = 10000;
 
   if (window.ethereum.networkVersion !== chainId) {
     try {
@@ -139,7 +138,6 @@ export async function FarmConnectWallet() {
 
   } else {
     alert("Please install metamask");
-    getRLamboPrice()
 }}
 
 

@@ -1,10 +1,6 @@
 import "./styles/App.css";
 import React, { Component } from "react";
 import "sf-font";
-import ABI from "./blockchain/ABIs/ABI.json";
-import VAULTABI from "./blockchain/ABIs/VAULTABI.json";
-import { NFTCONTRACT, STAKINGCONTRACT } from "./blockchain/config.js";
-import Web3 from "web3";
 import Navbar from "./components/Navbar";
 import Nftminter from "./components/Nftminter";
 import Nftportal from "./components/Nftportal";

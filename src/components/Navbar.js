@@ -21,6 +21,7 @@ export default function Navbar(props) {
             style={{ fontFamily: "SF Pro Display" }}
           >
             <img
+            alt='logo'
               className="nav-logo"
               style={{ width: "100px" }}
               src="lambo-logo.png"

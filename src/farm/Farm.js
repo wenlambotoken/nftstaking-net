@@ -8,8 +8,25 @@ import React, { useState } from "react";
 import getRLamboPrice  from './apr';
 import { apr } from "./apr";
 import { tvl } from "./apr";
+import $ from 'jquery'; 
 
 export default function Farm() {
+
+  if(window.location.pathname === '/farm') {
+    $(document).ready(async () => {
+      await FarmConnectWallet()
+      console.trace('tetas')
+      await totalDeposit();
+      await pendingRewards();
+      await getRLamboPrice();
+      getApr();
+      getTvl();
+      // window.setInterval(() => {
+      //   pendingRewards();
+      //   totalDeposit();
+      // }, 5000);    
+    })
+  }
 
   const [stateTvl, setTvl] = useState(0);
   const [stateApr, setApr] = useState(0);
@@ -88,26 +105,9 @@ export default function Farm() {
   }
 
 
-  if(window.location.pathname === '/farm') {
-    (async () => {
-      await FarmConnectWallet()
-      totalDeposit()
-      pendingRewards()
-      await getRLamboPrice()
-      getApr()
-      getTvl()
-      window.setInterval(() => {
-        pendingRewards()
-        totalDeposit()
-      }, 10000);    
-    })()
-  }
-  console.log(tvl);
-
   return (
     <div>
       <div className="nftapp" style={{ height: "100%", textAlign: "center"}}>
-        {/* Crear un prop que sirva para *connectwallet* */}
         <Navbar 
         connectwallet={FarmConnectWallet}
         />

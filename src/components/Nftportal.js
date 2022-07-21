@@ -6,7 +6,7 @@ export default function Nftportal(props) {
   return (
     <div className="row nftportal mt-3" style={{ marginRight: "0px" }}>
       <div className="col mt-4 ml-3">
-        <img src="smartbch.png" width={"60%"}></img>
+        <img src="smartbch.png" width={"60%"} alt='smartbch'></img>
       </div>
       <div className="col">
         <h1 className="n2dtitlestyle mt-3">Your NFT Portal</h1>
@@ -21,7 +21,7 @@ export default function Nftportal(props) {
         </Button>
       </div>
       <div className="col mt-3 mr-5">
-        <img src="smartbch.png" width={"60%"}></img>
+        <img src="smartbch.png" width={"60%"} alt='smartbch'></img>
       </div>
     </div>
   );

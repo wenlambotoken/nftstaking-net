@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import { MASTERCHEFCONTRACT, infinite } from "../blockchain/config";
 import { lpcontract, account, FarmConnectWallet, farmcontract } from "../functions/ConnectButton";
 import Web3 from "web3";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import getRLamboPrice  from './apr';
 import { apr } from "./apr";
 import { tvl } from "./apr";
@@ -12,21 +12,24 @@ import $ from 'jquery';
 
 export default function Farm() {
 
-  if(window.location.pathname === '/farm') {
-    $(document).ready(async () => {
-      await FarmConnectWallet()
-      console.trace('tetas')
-      await totalDeposit();
-      await pendingRewards();
-      await getRLamboPrice();
-      getApr();
-      getTvl();
-      // window.setInterval(() => {
-      //   pendingRewards();
-      //   totalDeposit();
-      // }, 5000);    
-    })
-  }
+  FarmConnectWallet()
+
+  useEffect(() => {
+  (async () => {
+    await FarmConnectWallet()
+    await totalDeposit();
+    await pendingRewards();
+    await getRLamboPrice();
+    getApr();
+    getTvl();
+    window.setInterval(() => {
+      pendingRewards();
+      totalDeposit();
+    }, 5000); 
+  })()
+  }, [])
+  
+     
 
   const [stateTvl, setTvl] = useState(0);
   const [stateApr, setApr] = useState(0);
@@ -73,7 +76,7 @@ export default function Farm() {
 
     const totalStaked = await farmcontract.methods.userInfo(0, account).call();
     var deposit = Web3.utils.fromWei(totalStaked.amount);
-    var totalBalance = Number(deposit).toFixed(4);
+    var totalBalance = Number(deposit);
     getTvl();
     getApr();
     setBalance(totalBalance);

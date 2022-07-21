@@ -14,6 +14,7 @@ export default async function getRLamboPrice() {
   var web3 = new Web3(window.ethereum);
   const MasterchefContract = new web3.eth.Contract(FARMABI, MASTERCHEFCONTRACT)
 
+  const FLEXUSD = new Token(ChainId.SMARTBCH, '0x7b2B3C5308ab5b2a1d9a94d20D35CCDf61e05b72', 18, 'flexUSD', 'flexUSD')
   const RLAM = new Token(ChainId.SMARTBCH, RLAMBOADDRESS, 18, 'RLAM', 'Reward Lambo');
   const LAMBO = new Token(ChainId.SMARTBCH, LAMBOADDRESS, 18, 'LAMBO', 'Lambo Token');
 
@@ -23,6 +24,18 @@ export default async function getRLamboPrice() {
       allocPoint: 10000,
       token0: RLAM,
       token1: LAMBO,
+    },
+    "0x27580618797a2CE02FDFBbee948388a50a823611": {
+      farmId: 888,
+      allocPoint: 0,
+      token0: WBCH[ChainId.SMARTBCH],
+      token1: new Token(ChainId.SMARTBCH, '0xBc2F884680c95A02cea099dA2F524b366d9028Ba', 18, 'bcUSDT', 'BlockNG-Peg USDT Token'),
+    },
+    "0xE1B5bC09427710BC4d886eC49654944110B58134": {
+      farmId: 48,
+      allocPoint: 9069975,
+      token0: WBCH[ChainId.SMARTBCH],
+      token1: new Token(ChainId.SMARTBCH, '0x0E36C351ff40183435C9Bd1D17bfb1F3548f1963', 18, 'LAMBO', 'wenlambo'),
     },
   }
   var farms = []
@@ -64,37 +77,31 @@ export default async function getRLamboPrice() {
   }
 
   let bchPriceUSD = 100;
-  let rLamPriceUSD = 0.001;
+  let lamboPriceBch = 0.0008;
+  let rLamPriceUSD = 0.001; // precio en lambos
+  const lamborlamPool = farms.find((v) => v.pair === '0xC86eD705e10D939057c65C61c099af2AB7f8FdF3').pool;
+  const bchusdtPool = farms.find((v) => v.pair === '0x27580618797a2CE02FDFBbee948388a50a823611').pool;
+  const lambobchPool = farms.find((v) => v.pair === '0xE1B5bC09427710BC4d886eC49654944110B58134').pool;
 
-  console.log('la concha de tu madre');
-  // if (chainId === ChainId.SMARTBCH) {
-  //   let bchPriceFlexUSD = 100;
-  //   const mistflexusdPool = farms.find((v) => v.pair === '0x437E444365aD9ed788e8f255c908bceAd5AEA645').pool;
-  //   const bchusdtPool = farms.find((v) => v.pair === '0x27580618797a2CE02FDFBbee948388a50a823611').pool;
-  //   const bchflexusdPool = farms.find((v) => v.pair === '0x24f011f12Ea45AfaDb1D4245bA15dCAB38B43D13').pool;
+  if (bchusdtPool.reserves) {
+    bchPriceUSD = Number.parseFloat(Number(bchusdtPool.reserves[1]).toFixed()) / Number.parseFloat(Number(bchusdtPool.reserves[0]).toFixed());
+  }
+  if (lambobchPool.reserves) {
+    lamboPriceBch = Number.parseFloat(Number(lambobchPool.reserves[1]).toFixed()) / Number.parseFloat(Number(lambobchPool.reserves[0]).toFixed());
+  }
+  if (lamborlamPool.reserves && bchusdtPool.reserves && lambobchPool.reserves) {
+    rLamPriceUSD = 1. / ( Number.parseFloat(Number(lamborlamPool.reserves[1]).toFixed()) / Number.parseFloat(Number(lamborlamPool.reserves[0]).toFixed()))
+    rLamPriceUSD = rLamPriceUSD * lamboPriceBch; //precio en bch
+    rLamPriceUSD *= bchPriceUSD
+    console.log(rLamPriceUSD);
+  } 
 
-  //   if (bchusdtPool.reserves) {
-  //     bchPriceUSD = Number.parseFloat(Number(bchusdtPool.reserves[1]).toFixed()) / Number.parseFloat(Number(bchusdtPool.reserves[0]).toFixed());
-  //   }
-  //   if (bchflexusdPool.reserves) {
-  //     bchPriceFlexUSD = Number.parseFloat(Number(bchflexusdPool.reserves[1]).toFixed()) / Number.parseFloat(Number(bchflexusdPool.reserves[0]).toFixed());
-  //   }
-  //   if (mistflexusdPool.reserves && bchusdtPool.reserves && bchflexusdPool.reserves) {
-  //     rLamPriceUSD = 1. / ( Number.parseFloat(Number(mistflexusdPool.reserves[0]).toFixed()) / Number.parseFloat(Number(mistflexusdPool.reserves[1]).toFixed()))
-  //     rLamPriceUSD /= (bchPriceFlexUSD / bchPriceUSD);
-  //   } 
-
-  // } else {
-  //     bchPriceUSD = 100;
-  //     rLamPriceUSD = 0.0001;
-  // }
-  
   //1. hacer la logica para encontrar el precio de rlam en lambos
-  //2. pasar el precio de rlam en lambos a wbch y de wbch a bcusdt
+  //2. pasar los lambos a wbch y de wbch a bcusdt
 
   const v2PairsBalances = await Promise.all(farms.map(async (farm) => {
     const lpToken = new Token(ChainId.SMARTBCH, farm.pair, 18, 'LP', 'LP Token');
-    const apicall = await axios.get(`https://testnet.sonar.cash/api?module=account&action=tokenbalance&contractaddress=${lpToken.address}&address=${MASTERCHEFCONTRACT}`)
+    const apicall = await axios.get(`https://sonar.cash/api?module=account&action=tokenbalance&contractaddress=${lpToken.address}&address=${MASTERCHEFCONTRACT}`)
     .then(output => {
       const { result } = output.data;
       const address  = lpToken.address;
@@ -108,8 +115,12 @@ export default async function getRLamboPrice() {
       const totalSupply = farms[i].pool.totalSupply;
       const chefBalance = v2PairsBalances[i][0];
 
-      if (farms[i].pool.token0 === RLAM.address) {
-        const reserve = Number.parseFloat(farms[i].pool.reserves[0]).toFixed();
+      if (farms[i].pool.token1 === RLAM.address) {
+        const reserve = Number.parseFloat(farms[i].pool.reserves[1]).toFixed();
+        tvl = reserve / totalSupply * chefBalance * rLamPriceUSD * 2;
+      } 
+      else if (farms[i].pool.token1 === RLAM.address) {
+        const reserve = Number.parseFloat(farms[i].pool.reserves[1]).toFixed();
         tvl = reserve / totalSupply * chefBalance * rLamPriceUSD * 2;
       }
       else if (farms[i].pool.token0 === WBCH[ChainId.SMARTBCH].address) {

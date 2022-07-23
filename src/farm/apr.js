@@ -79,6 +79,7 @@ export default async function getRLamboPrice() {
   let bchPriceUSD = 100;
   let lamboPriceBch = 0.0008;
   let rLamPriceUSD = 0.001; // precio en lambos
+  let rLamPriceLambo = 0.001;
   const lamborlamPool = farms.find((v) => v.pair === '0xC86eD705e10D939057c65C61c099af2AB7f8FdF3').pool;
   const bchusdtPool = farms.find((v) => v.pair === '0x27580618797a2CE02FDFBbee948388a50a823611').pool;
   const lambobchPool = farms.find((v) => v.pair === '0xE1B5bC09427710BC4d886eC49654944110B58134').pool;
@@ -90,14 +91,11 @@ export default async function getRLamboPrice() {
     lamboPriceBch = Number.parseFloat(Number(lambobchPool.reserves[1]).toFixed()) / Number.parseFloat(Number(lambobchPool.reserves[0]).toFixed());
   }
   if (lamborlamPool.reserves && bchusdtPool.reserves && lambobchPool.reserves) {
-    rLamPriceUSD = 1. / ( Number.parseFloat(Number(lamborlamPool.reserves[1]).toFixed()) / Number.parseFloat(Number(lamborlamPool.reserves[0]).toFixed()))
-    rLamPriceUSD = rLamPriceUSD * lamboPriceBch; //precio en bch
-    rLamPriceUSD *= bchPriceUSD
+    rLamPriceLambo = 1. / ( Number.parseFloat(Number(lamborlamPool.reserves[1]).toFixed()) / Number.parseFloat(Number(lamborlamPool.reserves[0]).toFixed()))
+    rLamPriceLambo = rLamPriceLambo * lamboPriceBch; //precio en bch
+    rLamPriceUSD = rLamPriceLambo * bchPriceUSD
     console.log(rLamPriceUSD);
   } 
-
-  //1. hacer la logica para encontrar el precio de rlam en lambos
-  //2. pasar los lambos a wbch y de wbch a bcusdt
 
   const v2PairsBalances = await Promise.all(farms.map(async (farm) => {
     const lpToken = new Token(ChainId.SMARTBCH, farm.pair, 18, 'LP', 'LP Token');

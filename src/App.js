@@ -7,7 +7,6 @@ import Nftportal from "./components/Nftportal";
 import Nft from "./components/nft.js";
 import { account, vaultcontract, contract, StakeConnectWallet } from './functions/ConnectButton';
 
-
 class App extends Component {
   constructor() {
     super();

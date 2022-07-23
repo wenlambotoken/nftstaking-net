@@ -25,9 +25,9 @@ export default function ConnectButton(props) {
               className="connectbutton"
               onClick={props.connectwallet}
               style={{ fontFamily: "SF Pro Display" }}
-              value="Connect Your Wallet"
+              value='Connect your Wallet'
             />
-          </div>
+        </div>
     )
 }
 
@@ -89,59 +89,6 @@ export async function rewardinfo() {
   }
   return processArray([rwdArray]);
 }
-
-export async function FarmConnectWallet() {
-  const chainId = 10000;
-
-  if (window.ethereum.networkVersion !== chainId) {
-    try {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: web3.utils.toHex(chainId) }],
-      });
-    } catch (err) {
-      // This error code indicates that the chain has not been added to MetaMask
-      if (err.code === 4902) {
-        await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [
-            {
-              chainName: "Smart Bitcoin Cash",
-              chainId: web3.utils.toHex(chainId),
-              nativeCurrency: {
-                name: "BCH",
-                decimals: 18,
-                symbol: "BCH",
-              },
-              rpcUrls: ["https://smartbch.fountainhead.cash/mainnet"],
-            },
-          ],
-        });
-      }
-    }
-  }
-
-  if (window.ethereum) {
-    var web3 = await new Web3(window.ethereum);
-    await window.ethereum.send("eth_requestAccounts");
-    var accounts = await web3.eth.getAccounts();
-    account = accounts[0];
-    let accountText = `${accounts[0].slice(0, 4)}***${accounts[0].slice(
-      38,
-      42
-    )}`;
-    document.getElementById("connectbtn").value = accountText;
-    contract = new web3.eth.Contract(ABI, NFTCONTRACT);
-    vaultcontract = new web3.eth.Contract(VAULTABI, STAKINGCONTRACT);
-    farmcontract = new web3.eth.Contract(FARMABI, MASTERCHEFCONTRACT);
-    lpcontract = new web3.eth.Contract(LPABI, LPCONTRACT);
-
-  } else {
-    alert("Please install metamask");
-}}
-
-
-
 
 export async function StakeConnectWallet() {
   const chainId = 10001;

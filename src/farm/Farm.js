@@ -140,7 +140,7 @@ export default function Farm() {
                     RLAM-LAMBO LP
                   </h1>
                   <h5 className="mb-4" style={{ fontWeight: "300" }}>
-                    (Mistswap)
+                    (Tangoswap)
                   </h5>
                 </div>
               </div>

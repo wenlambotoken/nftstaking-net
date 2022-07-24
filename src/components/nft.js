@@ -102,7 +102,7 @@ export default function NFT() {
     return (
       <h1 className="text-3xl">You don't have any NFTs</h1>)
   return (
-    <div className='nftportal'>
+    <div className='nftportal' style={{textAlign: 'left'}}>
       <div className="container col-lg-11 col-md-12 col-sm-12">
         <div className="row items px-3 pt-3">
           <div className="ml-3 mr-3 nftimages">

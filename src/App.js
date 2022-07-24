@@ -6,6 +6,7 @@ import Nftminter from "./components/Nftminter";
 import Nftportal from "./components/Nftportal";
 import Nft from "./components/nft.js";
 import { account, vaultcontract, contract, StakeConnectWallet } from './functions/ConnectButton';
+import { refreshData } from "./farm/Farm";
 
 class App extends Component {
   constructor() {
@@ -17,6 +18,10 @@ class App extends Component {
   }
 
   render() {
+
+    if(window.location.pathname !== '/farm') {
+      window.clearInterval(refreshData);
+    }
 
     async function claimit() {
       var rawnfts = await vaultcontract.methods.tokensOfOwner(account).call();

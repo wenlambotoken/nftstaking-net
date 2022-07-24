@@ -10,6 +10,8 @@ import { tvl } from "./apr";
 import FARMABI from '../blockchain/ABIs/FARMABI.json';
 import LPABI from '../blockchain/ABIs/LPABI.json';
 
+export let refreshData;
+
 export default function Farm() {
 
   let farmcontract;
@@ -109,14 +111,16 @@ export default function Farm() {
       await getApr();
       await totalDeposit();
       await pendingRewards();
-      await window.setInterval(() => {
+      refreshData = await window.setInterval(() => {
         pendingRewards();
         totalDeposit();
       }, 5000);
+
     } else {
       alert("Please install metamask");
     }
   }
+
 
   return (
     <div>
@@ -209,6 +213,7 @@ export default function Farm() {
                         height: "40px",
                         backgroundColor: "#ffffff10",
                         boxShadow: "1px 1px 5px #000000",
+                        padding: '0px'
                       }}
                     >
                       Unstake
@@ -255,7 +260,7 @@ export default function Farm() {
                 <h4 className="pt-3" style={{ fontWeight: "300" }}>
                   APR
                 </h4>
-                <h5 id='apr'></h5>
+                <h5 id='apr'>0%</h5>
                 <h4 className="pt-3" style={{ fontWeight: "300" }}>
                   Your Rewards
                 </h4>
@@ -268,7 +273,7 @@ export default function Farm() {
                   }}
                 >
                   <span id="rewards" style={{ color: "white" }}>
-                   
+                   0
                   </span>{" "}
                   RLAM
                 </h5>
@@ -295,7 +300,7 @@ export default function Farm() {
                   }}
                 >
                   <span id="stakedBalance" style={{ color: "white" }}>
-                    {balance}
+                    0
                   </span>{" "}
                   LP
                 </h5>

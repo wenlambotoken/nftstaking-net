@@ -19,7 +19,7 @@ export default async function getRLamboPrice() {
   const LAMBO = new Token(ChainId.SMARTBCH, LAMBOADDRESS, 18, 'LAMBO', 'Lambo Token');
 
   const hardcodedPairs = {
-    "0xC86eD705e10D939057c65C61c099af2AB7f8FdF3": {
+    "0xC6c4d0531313d5B95169F15F0441F96784835054": {
       farmId: 0,
       allocPoint: 10000,
       token0: RLAM,
@@ -80,7 +80,7 @@ export default async function getRLamboPrice() {
   let lamboPriceBch = 0.0008;
   let rLamPriceUSD = 0.001; // precio en lambos
   let rLamPriceLambo = 0.001;
-  const lamborlamPool = farms.find((v) => v.pair === '0xC86eD705e10D939057c65C61c099af2AB7f8FdF3').pool;
+  const lamborlamPool = farms.find((v) => v.pair === '0xC6c4d0531313d5B95169F15F0441F96784835054').pool;
   const bchusdtPool = farms.find((v) => v.pair === '0x27580618797a2CE02FDFBbee948388a50a823611').pool;
   const lambobchPool = farms.find((v) => v.pair === '0xE1B5bC09427710BC4d886eC49654944110B58134').pool;
 

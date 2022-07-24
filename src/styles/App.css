@@ -345,7 +345,7 @@ background-image: linear-gradient( 112.1deg,  rgba(32,38,57,1) 11.4%, rgba(63,76
   width: 30%;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1000px) {
   #farm-container {
     width: 100%;
   }
